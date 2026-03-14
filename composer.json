@@ -1,0 +1,41 @@
+{
+    "name": "uitemplate/laravel",
+    "description": "Template UI berbasis PHP (Laravel) yang ringan dan modern. Dirancang untuk efisiensi tinggi dengan sistem komponen yang siap pakai.",
+    "type": "library",
+    "version": "1.0.0",
+    "keywords": ["laravel"],
+    "require": {
+        "php": " ^8.0 || ^8.1 || ^8.4",
+        "illuminate/support": "^11.0 || ^12.0"
+    },
+    "require-dev": {    
+        "phpunit/phpunit": "^11.0 || ^12.0.1 || ^12.5.14",
+        "orchestra/testbench": "^10.8 || ^10.9"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Uitemplate\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Uitemplate\\Laravel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "UI Template Team"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Uitemplate\\Laravel\\UitemplateServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
