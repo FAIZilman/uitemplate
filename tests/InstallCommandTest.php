@@ -21,6 +21,7 @@ class InstallCommandTest extends TestCase
             unlink($destination);
         }
         $this->artisan('install:ui', ['component' => 'button'])
+            ->expectsConfirmation('Apakah kamu yakin menginstall component button?', 'yes')
             ->assertExitCode(0);
 
     }
