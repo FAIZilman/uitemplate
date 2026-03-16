@@ -7,13 +7,16 @@ class InstallCommand extends Command
 {
 
     protected $signature = 'install:ui 
-    {component : Component name}
+    {component? : Component name}
     {--view : Install only Views}';
     protected $description = 'Install Component UITemplate into your Laravel project';
 
     public function handle()
     {
         $component = $this->argument('component');
+        if (!$component) {
+            $component = $this->ask('What component do you want to install?');
+        }
         $view = $this->option('view');
         $componentLower = strtolower($component);
         $componentFirstUpper = ucfirst(strtolower($component));
@@ -35,7 +38,9 @@ class InstallCommand extends Command
                     $this->comment("Installing {$component} component...");
                     $this->line('');
 
+                    sleep(2);
                     $this->line("✔ {$component} component installed");
+                    sleep(1);
                     $this->line("✔ Tailwind styles published");
 
                     $this->line('');
@@ -66,8 +71,11 @@ class InstallCommand extends Command
                     $this->comment("Installing {$component} component...");
                     $this->line('');
 
+                    sleep(2);
                     $this->line("✔ {$component} component installed");
+                    sleep(1);
                     $this->line("✔ Tailwind styles published");
+                    sleep(1);
                     $this->line("✔ Config file Created");
 
                     if (!file_exists($destination)) {
