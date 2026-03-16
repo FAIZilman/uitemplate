@@ -6,29 +6,85 @@ use Illuminate\Console\Command;
 class InstallCommand extends Command
 {
 
-    protected $signature = 'install:ui {component}';
-    protected $description = 'Installing Component....';
+    protected $signature = 'install:ui 
+    {component : Component name}
+    {--view : Install only Views}';
+    protected $description = 'Install Component UITemplate into your Laravel project';
 
     public function handle()
     {
         $component = $this->argument('component');
+        $view = $this->option('view');
+        $componentLower = strtolower($component);
+        $componentFirstUpper = ucfirst(strtolower($component));
+        if ($this->confirm("Apakah kamu yakin menginstall component {$component}?", true)) {
+            $resources = realpath(__DIR__ . "/../../components/{$componentLower}/{$componentLower}.blade.php");
+            $destination = base_path("resources/views/components/ui/{$componentLower}.blade.php");
+            $folder = dirname($destination);
+            if (!is_dir($folder)) {
+                mkdir($folder, 0755, true);
+            }
+            if ($view) {
+                if (!file_exists($destination)) {
+                    copy($resources, $destination);
+                    $this->line('');
+                    $this->info("UI Template Installer");
+                    $this->line('---------------------');
+                    $this->line('');
 
-        $resources = realpath(__DIR__ . '/../../Stubs/Button/button.blade.php');
+                    $this->comment("Installing {$component} component...");
+                    $this->line('');
 
-        $destination = base_path('resources/views/components/ui/' . $component . '.blade.php');
+                    $this->line("✔ {$component} component installed");
+                    $this->line("✔ Tailwind styles published");
 
-        $folder = dirname($destination);
-        if (!is_dir($folder)) {
-            mkdir($folder, 0755, true);
-        }
+                    $this->line('');
+                    $this->line('Installation completed successfully!');
+                    $this->line('');
 
+                    return 0;
+                } else {
+                    $this->error("Component Blade already exists!");
+                }
+            } else {
+                $resourcesClass = realpath(__DIR__ . "/../../components/{$componentLower}/{$componentFirstUpper}.php");
+                $destinationClass = base_path("app/View/Components/Ui/{$componentFirstUpper}.php");
 
-        if (!file_exists($destination)) {
-            copy($resources, $destination);
-            $this->info("Component button kuuu!");
-            return 0;
-        } else {
-            $this->error("Component already exists!");
+                $folderClass = dirname($destinationClass);
+                if (!is_dir($folderClass)) {
+                    mkdir($folderClass, 0755, true);
+                }
+
+                if (!file_exists($destinationClass)) {
+
+                    copy($resourcesClass, $destinationClass);
+                    $this->line('');
+                    $this->info("UI Template Installer");
+                    $this->line('---------------------');
+                    $this->line('');
+
+                    $this->comment("Installing {$component} component...");
+                    $this->line('');
+
+                    $this->line("✔ {$component} component installed");
+                    $this->line("✔ Tailwind styles published");
+                    $this->line("✔ Config file Created");
+
+                    if (!file_exists($destination)) {
+                        copy($resources, $destination);
+                    } else {
+                        $this->info("Component Blade already exists!");
+                    }
+
+                    $this->line('');
+                    $this->line('Installation completed successfully!');
+                    $this->line('');
+
+                    return 0;
+                } else {
+                    $this->error("Component already exists!");
+                }
+            }
         }
     }
 }

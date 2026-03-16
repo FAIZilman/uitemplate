@@ -2,7 +2,6 @@
     "name": "uitemplate/laravel",
     "description": "Template UI berbasis PHP (Laravel) yang ringan dan modern. Dirancang untuk efisiensi tinggi dengan sistem komponen yang siap pakai.",
     "type": "library",
-    "version": "1.0.0",
     "keywords": ["laravel"],
     "require": {
         "php": " ^8.0 || ^8.1 || ^8.4",
