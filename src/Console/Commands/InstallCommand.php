@@ -23,7 +23,7 @@ class InstallCommand extends Command
         if ($this->confirm("Apakah kamu yakin menginstall component {$component}?", true)) {
             $resources = realpath(__DIR__ . "/../../components/{$componentLower}/{$componentLower}.blade.php");
             $destination = base_path("resources/views/components/ui/{$componentLower}.blade.php");
-            if (!is_dir($resources) && !is_dir($destination)) {
+            if (!is_dir($resources)) {
                 $this->error("Component [{$component}] not found. Make sure the component exists.");
             } else {
                 $folder = dirname($destination);
