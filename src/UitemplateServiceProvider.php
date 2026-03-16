@@ -18,7 +18,7 @@ class UitemplateServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/views/components/ui' => resource_path('views/vendor/uitemplate/ui')
         ]);
-        Blade::componentNamespace('Uitemplate\\Views\\Components\\Ui', 'uitemplate');
+        Blade::componentNamespace('Uitemplate\\Laravel\\Views\\Components\\Ui', 'uitemplate');
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallCommand::class,
