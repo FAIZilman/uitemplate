@@ -12,11 +12,10 @@ class UitemplateServiceProvider extends ServiceProvider
             InstallCommand::class,
         ]);
         
-           $configPath = __DIR__ . '/../config/uitemplate.php';
-
-    if (file_exists($configPath)) {
-        $this->mergeConfigFrom($configPath, 'uitemplate');
-    }
+            $this->mergeConfigFrom(
+                __DIR__ . '/../config/uitemplate.php',
+                'uitemplate'
+            );
     }
     public function boot(): void
     {
@@ -24,9 +23,9 @@ class UitemplateServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/views/components/ui' => resource_path('views/vendor/uitemplate/ui')
         ]);
-        $this->publishes([
-        __DIR__ . '/../config/uitemplate.php' => config_path('uitemplate.php'),
-    ], 'uitemplate-config');
+            $this->publishes([
+            __DIR__ . '/../config/uitemplate.php' => config_path('uitemplate.php'),
+        ], 'uitemplate-config');
         Blade::componentNamespace('Uitemplate\\Laravel\\Views\\Components\\Ui', 'uitemplate');
         if ($this->app->runningInConsole()) {
             $this->commands([
