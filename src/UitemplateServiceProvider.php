@@ -8,9 +8,6 @@ class UitemplateServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->commands([
-            InstallCommand::class,
-        ]);
         
           $configPath = __DIR__ . '/../config/uitemplate.php';
 
