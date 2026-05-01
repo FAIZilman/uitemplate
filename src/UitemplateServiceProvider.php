@@ -12,10 +12,11 @@ class UitemplateServiceProvider extends ServiceProvider
             InstallCommand::class,
         ]);
         
-            $this->mergeConfigFrom(
-                __DIR__ . '/../config/uitemplate.php',
-                'uitemplate'
-            );
+          $configPath = __DIR__ . '/../config/uitemplate.php';
+
+    if (file_exists($configPath)) {
+        $this->mergeConfigFrom($configPath, 'uitemplate');
+    }
     }
     public function boot(): void
     {

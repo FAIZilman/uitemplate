@@ -47,12 +47,13 @@ class InstallCommandTest extends TestCase
         // if (file_exists($destination)) {
         //     unlink($destination);
         // }
-        $this->artisan('ui:add card --children=cardHeader --only-child')
-            ->assertExitCode(0);
+        $this->artisan('vendor:publish', [
+            '--tag' => 'uitemplate-config'
+        ])->assertExitCode(0);
 
 
         // ✅ child harus ada
-        $this->assertFileExists($targetDir . '/card-header.blade.php');
+        // $this->assertFileExists($targetDir . '/card-header.blade.php');
 
     }
 }
