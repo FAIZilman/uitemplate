@@ -1,10 +1,9 @@
 <?php
 
 return [
-
     'button' => [
         'type' => 'file',
-        'stub' => 'button.blade.php',
+        'stub' => 'button',
     ],
 
     'card' => [

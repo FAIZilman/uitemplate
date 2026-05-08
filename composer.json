@@ -19,8 +19,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/",
-            "Uitemplate\\Laravel\\": "src/"
+            "Tests\\": "tests/"
         }
     },
     "authors": [

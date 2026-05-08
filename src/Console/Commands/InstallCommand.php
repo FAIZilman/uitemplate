@@ -1,17 +1,18 @@
 <?php
 
 namespace Uitemplate\Laravel\Console\Commands;
+
 use Illuminate\Console\Command;
 use Uitemplate\Laravel\Generators\ComponentGenerator;
 
 class InstallCommand extends Command
 {
-
     protected $signature = 'ui:add
-    {name? : Component name}
-    {--children=* : Child Component (comma / multiple)}
-    {--force : Overwite File}
-    {--only-child : Generate Child Only}
+        {name? : Component name}
+        {--children=* : Child Component (comma / multiple)}
+        {--force : Overwrite File}
+        {--only-child : Generate Child Only}
+        {--view : Generate Blade Only (no class)}
     ';
 
     protected $description = 'Install Component UITemplate into your Laravel project';
@@ -20,130 +21,74 @@ class InstallCommand extends Command
     {
         $name = $this->argument('name');
 
-        if (!$name) {
+        if ($name === null) {
             $name = $this->ask('What name do you want to add?');
         }
 
-        $children = $this->option('children');
-        $force = $this->option('force');
+        // ✅ cek empty setelah ask (pisah dari null check)
+        if (empty(trim($name ?? ''))) {
+            $this->error("Name Component not empty");
+            return 1;
+        }
+
+        $children  = $this->option('children');
+        $force     = $this->option('force');
         $onlyChild = $this->option('only-child');
+        $viewOnly  = $this->option('view');
+
+        // === HEADER ===
+        $this->line('');
+        $this->info('UI Template Installer');
+        $this->line('---------------------');
+        $this->line('');
+        $this->comment("Installing [{$name}] component...");
+        $this->line('');
 
         $generator = new ComponentGenerator();
 
+        try {
             $files = $generator->generate(
                 $name,
                 $children,
                 $force,
-                $onlyChild
+                $onlyChild,
+                $viewOnly
             );
 
+            // === TIDAK ADA FILE YANG DI-GENERATE ===
             if (empty($files)) {
-                $this->warn('Nothing generated (maybe already exists).');
-                return Command::SUCCESS;
+                $this->warn('⚠  Nothing generated (maybe already exists.)');
+                $this->line('');
+                $this->line('Use --force to overwrite existing files.');
+                $this->line('');
+                return 0;
             }
 
+            // === OUTPUT PER FILE ===
+            foreach ($files as $file) {
+                // Ambil path relatif agar lebih ringkas di terminal
+                $relativePath = str_replace(base_path() . '/', '', $file);
 
+                // Bedakan blade dan class dari ekstensi
+                if (str_ends_with($file, '.blade.php')) {
+                    $this->line("  <fg=green>✔</> <fg=cyan>{$relativePath}</> <fg=gray>(blade)</>"); 
+                } else {
+                    $this->line("  <fg=green>✔</> <fg=cyan>{$relativePath}</> <fg=gray>(class)</>");
+                }
+            }
 
-        // $child = $this->option("child");
-        // if ($child === "all") {
-        //     var_dump("this is all");
-        // } else {
-        //     $childExplode = explode(',', $child);
-        //     $changeText = function ($text) {
-        //         return strtolower(rtrim(ltrim(implode('-', explode('/', trim(preg_replace('/([A-Z])/', '/$1', $text)))), "-"), "-"));
-        //     };
-        //     $map = array_map($changeText, $childExplode);
-        //     var_dump($map);
+        } catch (\Exception $e) {
+            $this->line('');
+            $this->error($e->getMessage());
+            $this->line('');
+            return 1;
+        }
 
-        // }
+        // === FOOTER ===
+        $this->line('');
+        $this->info('Installation completed successfully!');
+        $this->line('');
 
-        // var_dump($map);
-        // foreach ($map as $a) {
-        // var_dump($a);
-        // }
-        // $child = implode('-', explode(' ', trim(preg_replace('/([A-Z])/', ' $1', $child))));
-
-        // $view = $this->option('view');
-        // $componentName = implode('-', explode(' ', trim(preg_replace('/([A-Z])/', ' $1', $component))));
-        // if ($this->confirm("Apakah kamu yakin menginstall component {$component}?", true)) {
-        //     $resources = realpath(__DIR__ . "/../../components/{$componentName}/{$componentName}.blade.php");
-        //     $destination = base_path("resources/views/components/ui/{$componentName}.blade.php");
-        //     if (!file_exists($resources)) {
-        //         $this->error("Component [{$component}] not found. Make sure the component exists.");
-        //     } else {
-        //         $folder = dirname($destination);
-        //         if (!is_dir($folder)) {
-        //             mkdir($folder, 0755, true);
-        //         }
-        //         if ($view) {
-        //             if (!file_exists($destination)) {
-        //                 copy($resources, $destination);
-        //                 $this->line('');
-        //                 $this->info("UI Template Installer");
-        //                 $this->line('---------------------');
-        //                 $this->line('');
-
-        //                 $this->comment("Installing {$component} component...");
-        //                 $this->line('');
-
-        //                 sleep(2);
-        //                 $this->line("✔ {$component} component installed");
-        //                 sleep(1);
-        //                 $this->line("✔ Tailwind styles published");
-
-        //                 $this->line('');
-        //                 $this->line('Installation completed successfully!');
-        //                 $this->line('');
-
-        //                 return 0;
-        //             } else {
-        //                 $this->error("Component Blade already exists!");
-        //             }
-        //         } else {
-        //             $className = str_replace('-', '', ucwords($component, '-'));
-        //             $resourcesClass = realpath(__DIR__ . "/../../components/{$componentName}/{$$className}.php");
-        //             $destinationClass = base_path("app/View/Components/Ui/{$className}.php");
-
-        //             $folderClass = dirname($destinationClass);
-        //             if (!is_dir($folderClass)) {
-        //                 mkdir($folderClass, 0755, true);
-        //             }
-
-        //             if (!file_exists($destinationClass)) {
-
-        //                 copy($resourcesClass, $destinationClass);
-        //                 $this->line('');
-        //                 $this->info("UI Template Installer");
-        //                 $this->line('---------------------');
-        //                 $this->line('');
-
-        //                 $this->comment("Installing {$component} component...");
-        //                 $this->line('');
-
-        //                 sleep(2);
-        //                 $this->line("✔ {$component} component installed");
-        //                 sleep(1);
-        //                 $this->line("✔ Tailwind styles published");
-        //                 sleep(1);
-        //                 $this->line("✔ Config file Created");
-
-        //                 if (!file_exists($destination)) {
-        //                     copy($resources, $destination);
-        //                 } else {
-        //                     $this->info("Component Blade already exists!");
-        //                 }
-
-        //                 $this->line('');
-        //                 $this->line('Installation completed successfully!');
-        //                 $this->line('');
-
-        //                 return 0;
-        //             } else {
-        //                 $this->error("Component already exists!");
-        //             }
-        //         }
-        //     }
-
-        // }
+        return 0;
     }
 }
